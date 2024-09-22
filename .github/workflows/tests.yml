@@ -20,6 +20,9 @@ jobs:
       - name: install laravel
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      - name: generate key
+        run: php artisan key:generate
+
       - name: migrate database
         run: php artisan migrate --force
 
