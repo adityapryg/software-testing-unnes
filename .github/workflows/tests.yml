@@ -17,6 +17,9 @@ jobs:
           tools: composer:v2
           coverage: xdebug
 
+      - name: copy env
+        run: cp .env.example .env
+
       - name: install laravel
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
