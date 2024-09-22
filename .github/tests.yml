@@ -1,0 +1,39 @@
+name: Tests
+
+on : ['push']
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivamathur/setup-php@v2
+        with:
+          php-version: 8.2
+          tools: composer:v2
+          coverage: xdebug
+
+      - name: install laravel
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: migrate database
+        run: php artisan migrate
+
+      - name: optimize laravel
+        run: php artisan optimize
+
+      - name: cache view
+        run: php artisan view:cache
+
+      - name: PhpStan
+        run: composer phpstan
+
+      - name: Pest
+        run: php artisan test
+
+      - name: Coverage
+        run: php artisan test --coverage
