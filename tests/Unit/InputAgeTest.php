@@ -20,11 +20,33 @@ it('success to access input age page', function () {
 });
 
 it('success to input age between 20 to 50', function () {
-    $response = $this->post('/input-age', [
-        'age' => 40
-    ]);
+    $response = $this->post('/input-age', ['age' => 40]);
 
     $response->assertStatus(200);
     expect($response->json('message'))->toBe('Age successfully submitted!');
     expect($response->json('data.age'))->toBe(40);
+});
+
+it('fails when age is less than 20', function () {
+    $response = $this->post('/input-age', ['age' => 10]);
+
+    $response->assertInvalid(['age' =>'The age field must be between 20 and 50.']);
+});
+
+it('fails when age is greater than 50', function () {
+    $response = $this->post('/input-age', ['age' => 60]);
+
+    $response->assertInvalid(['age' =>'The age field must be between 20 and 50.']);
+});
+
+it('fails when age is not an integer', function () {
+    $response = $this->post('/input-age', ['age' => 30.4]);
+
+    $response->assertInvalid(['age' =>'The age field must be an integer.']);
+});
+
+it('fails when age is a non-numeric character', function () {
+    $response = $this->post('/input-age', ['age' => 'unnes']);
+
+    $response->assertInvalid(['age' => 'The age field must be a number.']);
 });
